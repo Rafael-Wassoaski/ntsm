@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include ("./headers/Header.ejs") %>
+<body>
+
+<div>
+    <link href="/stylesheets/home.css" rel="stylesheet"/>
+    <div class="home-container">
+        <form action="/api/v1/login">
+            <div>
+                <span class="home-text">NTSM</span>
+                <div class="mb-3">
+                    <input type="email" id="email" placeholder="Email" class="emailInput form-control"/>
+                </div>
+                <div class="mb-3">
+                    <input type="password" id="password" placeholder="Senha" class="passwordInput form-control"/>
+                </div>
+                <button class="btn btn-primary" type="submit">Entrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<%- include ("../public/scripts/index.ejs") %>
+
+</body>
+</html>

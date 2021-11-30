@@ -1,0 +1,19 @@
+.home-container {
+    width: 100%;
+    display: flex;
+    overflow: auto;
+    min-height: 100vh;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.home-text {
+    font-size: 90px;
+    align-self: center;
+    font-style: normal;
+    margin-top: 20%;
+    text-align: center;
+    font-weight: 900;
+    text-transform: capitalize;
+}
+

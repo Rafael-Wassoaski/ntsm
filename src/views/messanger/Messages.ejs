@@ -1,0 +1,27 @@
+<div>
+    <link href="/stylesheets/message.css" rel="stylesheet" />
+    <div class="home-container">
+        <div class="home-container1">
+            <div id="messages" class="home-container2">
+                <%- include("./Receiver")%>
+                <%- include("./Sender")%>
+
+            </div>
+            <div class="home-container3">
+        <textarea
+                placeholder="Mensagem"
+                id="messagetext"
+                class="messageArea"
+        ></textarea>
+                <button class="btn sendButton">
+          <span>
+            <span>Enviar</span>
+            <br />
+            <span></span>
+          </span>
+                </button>
+            </div>
+            <%- include ("./Contacts.ejs")%>
+        </div>
+    </div>
+</div>

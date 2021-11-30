@@ -1,0 +1,14 @@
+.contacts {
+    top: 5%;
+    flex: 0 0 auto;
+    left: 4%;
+    width: 20%;
+    height: 89%;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    border-color: #000000;
+    border-style: solid;
+    border-width: 2px;
+    flex-direction: column;
+}
