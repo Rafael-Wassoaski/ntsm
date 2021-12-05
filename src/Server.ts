@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
+import bodyParser from 'body-parser';
 
 import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
@@ -14,13 +15,12 @@ const app = express();
 const { BAD_REQUEST } = StatusCodes;
 
 
-
 /************************************************************************************
  *                              Set basic express settings
  ***********************************************************************************/
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Show routes called in console during development

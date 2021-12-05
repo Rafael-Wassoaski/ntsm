@@ -60,3 +60,9 @@ typings/
 # next.js build output
 .next
 /src/pre-start/env/
+/src/pre-start/env/development.env
+/src/pre-start/env/production.env
+/src/pre-start/env/test.env
+package-lock.json
+tsconfig.prod.json
+data/

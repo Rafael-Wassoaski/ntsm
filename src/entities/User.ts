@@ -1,26 +1,43 @@
+import * as mongoose from 'mongoose';
+import dataBaseConnection from '../../DataBaseConnection';
+import { IContato } from '@entities/Contato';
+
+export const contato = new mongoose.Schema({
+	nome: String,
+	email: String,
+});
+
+dataBaseConnection.model('contatos', contato);
+
+export const usuario = new mongoose.Schema({
+	nome: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+	},
+	senha: {
+		type: String,
+		required: true,
+	},
+	contatos: {
+		type: contato,
+	},
+});
+
+export const Users = dataBaseConnection.model('users', usuario);
+
 export interface IUser {
-    id: number;
-    name: string;
-    email: string;
+	id: Number
+	nome: String,
+	email: String,
+	senha: String,
+	contato: [IContato]
 }
 
-class User implements IUser {
-
-    public id: number;
-    public name: string;
-    public email: string;
-
-    constructor(nameOrUser: string | IUser, email?: string, id?: number) {
-        if (typeof nameOrUser === 'string') {
-            this.name = nameOrUser;
-            this.email = email || '';
-            this.id = id || -1;
-        } else {
-            this.name = nameOrUser.name;
-            this.email = nameOrUser.email;
-            this.id = nameOrUser.id;
-        }
-    }
+export interface IUserSearchData {
+	nome: String,
+	email: String
 }
-
-export default User;

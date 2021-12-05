@@ -60,6 +60,8 @@
     "build.ts"
   ],
   "dependencies": {
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
     "command-line-args": "^5.2.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
@@ -71,6 +73,7 @@
     "jet-logger": "^1.0.6",
     "jsonfile": "^6.1.0",
     "module-alias": "^2.2.2",
+    "mongoose": "^6.0.14",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

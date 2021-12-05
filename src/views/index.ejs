@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt_BR">
 <%- include ("./headers/Header.ejs") %>
 <body>
 
 <div>
     <link href="/stylesheets/home.css" rel="stylesheet"/>
     <div class="home-container">
-        <form action="/api/v1/login">
+        <form action="/api/v1/users/login" method="post">
             <div>
                 <span class="home-text">NTSM</span>
                 <div class="mb-3">
@@ -18,6 +18,8 @@
                 <button class="btn btn-primary" type="submit">Entrar</button>
             </div>
         </form>
+
+        <a href="/api/v1/users/signIn">Cadastre-se</a>
     </div>
 </div>
 

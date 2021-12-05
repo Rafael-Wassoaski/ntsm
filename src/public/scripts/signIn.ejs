@@ -1,0 +1,21 @@
+<script>
+
+	$(document).ready(function () {
+		$('#invalidPassword').hide();
+	});
+
+	function isPasswordsSame(event) {
+		const confirmPasswordInput = $('#confirmarSenha');
+		const passwordInput = $('#senha');
+		const signinButton = $('.signin');
+		const invalidPassword = $('#invalidPassword');
+
+		if (passwordInput.val() !== confirmPasswordInput.val()) {
+			signinButton.prop('disabled', true);
+			invalidPassword.show();
+			return;
+		}
+		invalidPassword.hide();
+		signinButton.prop('disabled', false);
+	}
+</script>
