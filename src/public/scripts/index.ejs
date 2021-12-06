@@ -1,6 +1,10 @@
 <script>
 	$(document).ready(() => {
-		console.log('a')
+		const message = '<%- message; %>';
+		console.log(message);
+		if (message) {
+			alert(message);
 
+		}
 	});
 </script>

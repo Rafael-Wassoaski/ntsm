@@ -9,5 +9,5 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
  */
 export async function index(req: Request, res: Response){
 	
-	return res.render('index.ejs');
+	return res.render('index.ejs', {message: null});
 }

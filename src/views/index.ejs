@@ -6,14 +6,15 @@
 <div>
     <link href="/stylesheets/home.css" rel="stylesheet"/>
     <div class="home-container">
-        <form action="/api/v1/users/login" method="post">
+        <form action="/api/v1/users/login" method="POST">
             <div>
                 <span class="home-text">NTSM</span>
                 <div class="mb-3">
-                    <input type="email" id="email" placeholder="Email" class="emailInput form-control"/>
+                    <input type="text" id="email" name="login" placeholder="Login" class="emailInput form-control"/>
                 </div>
                 <div class="mb-3">
-                    <input type="password" id="password" placeholder="Senha" class="passwordInput form-control"/>
+                    <input type="password" id="password" name="senha" placeholder="Senha"
+                           class="passwordInput form-control"/>
                 </div>
                 <button class="btn btn-primary" type="submit">Entrar</button>
             </div>
@@ -22,7 +23,6 @@
         <a href="/api/v1/users/signIn">Cadastre-se</a>
     </div>
 </div>
-
 
 <%- include ("../public/scripts/index.ejs") %>
 

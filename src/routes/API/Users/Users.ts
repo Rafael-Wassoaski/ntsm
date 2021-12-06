@@ -1,10 +1,10 @@
-import StatusCodes from 'http-status-codes';
+import StatusCodes  from 'http-status-codes';
 import { Request, Response } from 'express';
-import { IUser, IUserSearchData, Users } from '../../../entities/User';
+import { IUserSearchData, Users } from '../../../entities/User';
+import * as crypto from 'crypto';
+import config from 'config';
 
-import { paramMissingError } from '@shared/constants';
-
-const { BAD_REQUEST, CREATED, OK } = StatusCodes;
+const { BAD_REQUEST, CREATED, OK, FORBIDDEN, NOT_FOUND } = StatusCodes;
 
 /**
  * Login if the user and password are corrects
@@ -13,12 +13,15 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
  * @param res
  */
 export async function login(req: Request, res: Response) {
+	const {login, senha} = req.body;
+	const user = await _findUserByNameOrEmail({ nome: login, email: login });
 	
-	// const { sessionID } = req.cookies;
-	//
-	//
-	// console.log(req.cookies);
-	return res.render('index.ejs');
+	if(!user){
+		res.status(NOT_FOUND);
+		res.redirect('/');
+		return res.render('index.ejs', {message: null});
+	}
+	return res.render('index.ejs', {message: null});
 }
 
 /**
@@ -50,7 +53,7 @@ async function _isUserAvailible(req: Request, res: Response) {
 	const { nome, email } = req.body;
 	const user = await _findUserByNameOrEmail({ nome, email });
 	if (user) {
-		res.status(403);
+		res.status(FORBIDDEN);
 		throw Error('Usuário já cadastrado');
 	}
 }
@@ -64,9 +67,24 @@ async function _isUserAvailible(req: Request, res: Response) {
  */
 async function _addOneUser(req: Request, res: Response) {
 	const { nome, email, senha } = req.body;
+	const digestedPassword = digestPassword(senha);
 	
-	const { id } = await Users.create({ nome, email, senha });
+	const { id } = await Users.create({ nome, email, senha: digestedPassword });
 	return res.redirect('/');
+}
+
+/**
+ * generate a sha512 based on the passed password
+ * @param password
+ */
+function digestPassword(password: string): String {
+	console.log(config.get('password.sault'));
+	if (password) {
+		const salt: string = config.get('password.sault');
+		return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+	}
+	
+	throw Error('Senha não informada');
 }
 
 export async function createUser(req: Request, res: Response) {
