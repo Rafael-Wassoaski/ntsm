@@ -1,33 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt_BR">
-<%- include ("../headers/Header.ejs") %>
-<body>
-
-<form action="/api/v1/users/add" method="POST">
+  <%- include ("../headers/Header.ejs") %>
+  <body>
     <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email">
-        <div id="emailHelp" class="form-text">Seu email não será compartilhado</div>
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" />
+      <div id="emailHelp" class="form-text">
+        Seu email não será compartilhado
+      </div>
     </div>
 
     <div class="mb-3">
-        <label for="nome" class="form-label">Nome de usuário</label>
-        <input type="text" class="form-control" id="nome" name="nome" >
+      <label for="nome" class="form-label">Nome de usuário</label>
+      <input type="text" class="form-control" id="nome" />
     </div>
 
     <div class="mb-3">
-        <label for="senha" class="form-label">Senha</label>
-        <input type="password" class="form-control" id="senha" name="senha" onchange="isPasswordsSame(event)">
+      <label for="senha" class="form-label">Senha</label>
+      <input
+        type="password"
+        class="form-control"
+        id="senha"
+        onchange="isPasswordsSame(event)"
+      />
     </div>
 
     <div class="mb-3">
-        <label for="confirmarSenha" class="form-label">Confirme sua senha</label>
-        <p id="invalidPassword" >As senhas não conferem</p>
-        <input type="password" class="form-control" id="confirmarSenha" onchange="isPasswordsSame(event)">
+      <label for="confirmarSenha" class="form-label">Confirme sua senha</label>
+      <p id="invalidPassword">As senhas não conferem</p>
+      <input
+        type="password"
+        class="form-control"
+        id="confirmarSenha"
+        onchange="isPasswordsSame(event)"
+      />
     </div>
 
-    <button class="btn btn-primary signin" type="submit">Entrar</button>
-</form>
+    <button class="btn btn-primary signin" onclick="signIn()">Entrar</button>
 
-<%- include ("../../public/scripts/signIn.ejs")%>
-</body>
+    <%- include ("../../public/scripts/signIn.ejs")%>
+  </body>
+</html>

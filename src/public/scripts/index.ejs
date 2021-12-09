@@ -1,10 +1,38 @@
 <script>
-	$(document).ready(() => {
-		const message = '<%- message; %>';
-		console.log(message);
-		if (message) {
-			alert(message);
+  function login() {
+    const login = $("#login").val();
+    const password = $("#password").val();
 
-		}
-	});
+    if (!login || !password) {
+      alert("Informe seu login e senha para continuar");
+      return;
+    }
+
+    const userCredentials = {
+      login,
+      password,
+    };
+    $.ajax({
+      url: "/api/v1/users/login",
+      type: "post",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(userCredentials),
+      success: (res) => {
+        console.log(res);
+        if (res) {
+          const user = res;
+          window.localStorage.setItem("user", JSON.stringify(user));
+        }
+      },
+      error: (res) => {
+        if (!res.responseJSON) {
+          alert("Erro desconhecido, tente novamente mais tarde");
+          return;
+        }
+
+        const { message } = res.responseJSON;
+        alert(message);
+      },
+    });
+  }
 </script>

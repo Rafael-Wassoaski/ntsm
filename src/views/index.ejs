@@ -1,30 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt_BR">
-<%- include ("./headers/Header.ejs") %>
-<body>
+  <%- include ("./headers/Header.ejs") %>
+  <body>
+    <div>
+      <link href="/stylesheets/home.css" rel="stylesheet" />
+      <div class="home-container">
+        <div>
+          <span class="home-text">NTSM</span>
+          <div class="mb-3">
+            <input
+              type="text"
+              id="login"
+              placeholder="Login"
+              class="emailInput form-control"
+            />
+          </div>
+          <div class="mb-3">
+            <input
+              type="password"
+              id="password"
+              placeholder="Senha"
+              class="passwordInput form-control"
+            />
+          </div>
+          <button class="btn btn-primary" onclick="login()">Entrar</button>
+        </div>
 
-<div>
-    <link href="/stylesheets/home.css" rel="stylesheet"/>
-    <div class="home-container">
-        <form action="/api/v1/users/login" method="POST">
-            <div>
-                <span class="home-text">NTSM</span>
-                <div class="mb-3">
-                    <input type="text" id="email" name="login" placeholder="Login" class="emailInput form-control"/>
-                </div>
-                <div class="mb-3">
-                    <input type="password" id="password" name="senha" placeholder="Senha"
-                           class="passwordInput form-control"/>
-                </div>
-                <button class="btn btn-primary" type="submit">Entrar</button>
-            </div>
-        </form>
-
-        <a href="/api/v1/users/signIn">Cadastre-se</a>
+        <a href="/signIn">Cadastre-se</a>
+      </div>
     </div>
-</div>
 
-<%- include ("../public/scripts/index.ejs") %>
-
-</body>
+    <%- include ("../public/scripts/index.ejs") %>
+  </body>
 </html>

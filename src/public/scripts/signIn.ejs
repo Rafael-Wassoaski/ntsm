@@ -1,21 +1,51 @@
 <script>
+  $(document).ready(function () {
+    $("#invalidPassword").hide();
+  });
 
-	$(document).ready(function () {
-		$('#invalidPassword').hide();
-	});
+  function isPasswordsSame(event) {
+    const confirmPasswordInput = $("#confirmarSenha");
+    const passwordInput = $("#senha");
+    const signinButton = $(".signin");
+    const invalidPassword = $("#invalidPassword");
 
-	function isPasswordsSame(event) {
-		const confirmPasswordInput = $('#confirmarSenha');
-		const passwordInput = $('#senha');
-		const signinButton = $('.signin');
-		const invalidPassword = $('#invalidPassword');
+    if (passwordInput.val() !== confirmPasswordInput.val()) {
+      signinButton.prop("disabled", true);
+      invalidPassword.show();
+      return;
+    }
+    invalidPassword.hide();
+    signinButton.prop("disabled", false);
+  }
 
-		if (passwordInput.val() !== confirmPasswordInput.val()) {
-			signinButton.prop('disabled', true);
-			invalidPassword.show();
-			return;
-		}
-		invalidPassword.hide();
-		signinButton.prop('disabled', false);
-	}
+  function signIn() {
+    const nome = $("#nome").val();
+    const email = $("#email").val();
+    const senha = $("#senha").val();
+    const userCredentials = {
+      nome,
+      email,
+      senha,
+    };
+
+    $.ajax({
+      url: "/api/v1/users/add",
+      type: "post",
+	  contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(userCredentials),
+      success: (res) => {
+		  alert('Usuário cadastro com sucesso');
+		  window.location.href = '/'
+	  },
+      error: (res) => {
+        if (!res.responseJSON) {
+          alert("Erro desconhecido, tente novamente mais tarde");
+          return;
+        }
+
+        const { message } = res.responseJSON;
+        alert(message);
+      },
+    });
+  }
 </script>

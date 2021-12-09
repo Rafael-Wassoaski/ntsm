@@ -1,10 +1,17 @@
-import StatusCodes  from 'http-status-codes';
-import { Request, Response } from 'express';
-import { IUserSearchData, Users } from '../../../entities/User';
-import * as crypto from 'crypto';
-import config from 'config';
+import StatusCodes from "http-status-codes";
+import { Request, Response } from "express";
+import { IUserSearchData, Users } from "../../../entities/User";
+import * as crypto from "crypto";
+import config from "config";
 
-const { BAD_REQUEST, CREATED, OK, FORBIDDEN, NOT_FOUND } = StatusCodes;
+const {
+  BAD_REQUEST,
+  CREATED,
+  OK,
+  FORBIDDEN,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = StatusCodes;
 
 /**
  * Login if the user and password are corrects
@@ -13,15 +20,24 @@ const { BAD_REQUEST, CREATED, OK, FORBIDDEN, NOT_FOUND } = StatusCodes;
  * @param res
  */
 export async function login(req: Request, res: Response) {
-	const {login, senha} = req.body;
-	const user = await _findUserByNameOrEmail({ nome: login, email: login });
-	
-	if(!user){
-		res.status(NOT_FOUND);
-		res.redirect('/');
-		return res.render('index.ejs', {message: null});
-	}
-	return res.render('index.ejs', {message: null});
+  const { login, password } = req.body;
+  const user = await _findUserByNameOrEmail({ nome: login, email: login });
+
+  if (!user) {
+    res.status(NOT_FOUND);
+    return res.json({ message: "Usuário não cadastrado" });
+  }
+
+  const digestedRequestPassword = digestPassword(password);
+
+  if (digestedRequestPassword !== user.senha) {
+    res.status(FORBIDDEN);
+    return res.json({ message: "Senha ou usuário incorretos" });
+  }
+
+  delete user.password;
+  res.status(OK);
+  return res.json(user);
 }
 
 /**
@@ -32,7 +48,7 @@ export async function login(req: Request, res: Response) {
  * @returns
  */
 export async function getAllUsers(req: Request, res: Response) {
-	return res.render('messanger/Messages.ejs');
+  return res.render("messanger/Messages.ejs");
 }
 
 /**
@@ -40,7 +56,7 @@ export async function getAllUsers(req: Request, res: Response) {
  * @param user
  */
 function _findUserByNameOrEmail(user: IUserSearchData) {
-	return Users.findOne({ $or: [{ nome: user.nome }, { email: user.email }] });
+  return Users.findOne({ $or: [{ nome: user.nome }, { email: user.email }] });
 }
 
 /**
@@ -50,12 +66,12 @@ function _findUserByNameOrEmail(user: IUserSearchData) {
  * @param next
  */
 async function _isUserAvailible(req: Request, res: Response) {
-	const { nome, email } = req.body;
-	const user = await _findUserByNameOrEmail({ nome, email });
-	if (user) {
-		res.status(FORBIDDEN);
-		throw Error('Usuário já cadastrado');
-	}
+  const { nome, email } = req.body;
+  const user = await _findUserByNameOrEmail({ nome, email });
+  if (user) {
+    res.status(FORBIDDEN);
+    throw Error("Usuário já cadastrado");
+  }
 }
 
 /**
@@ -66,11 +82,21 @@ async function _isUserAvailible(req: Request, res: Response) {
  * @returns
  */
 async function _addOneUser(req: Request, res: Response) {
-	const { nome, email, senha } = req.body;
-	const digestedPassword = digestPassword(senha);
-	
-	const { id } = await Users.create({ nome, email, senha: digestedPassword });
-	return res.redirect('/');
+  const { nome, email, senha } = req.body;
+  const digestedPassword = digestPassword(senha);
+
+  const { id } = await Users.create({ nome, email, senha: digestedPassword });
+  res.status(CREATED);
+  return res.end();
+}
+
+export async function createUser(req: Request, res: Response) {
+  try {
+    await _isUserAvailible(req, res);
+    await _addOneUser(req, res);
+  } catch (error: any) {
+    return res.json({ message: error.message });
+  }
 }
 
 /**
@@ -78,22 +104,14 @@ async function _addOneUser(req: Request, res: Response) {
  * @param password
  */
 function digestPassword(password: string): String {
-	console.log(config.get('password.sault'));
-	if (password) {
-		const salt: string = config.get('password.sault');
-		return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-	}
-	
-	throw Error('Senha não informada');
-}
+  if (password) {
+    const salt: string = config.get("password.sault");
+    return crypto
+      .pbkdf2Sync(password, salt, 1000, 64, "sha512")
+      .toString("hex");
+  }
 
-export async function createUser(req: Request, res: Response) {
-	try {
-		await _isUserAvailible(req, res);
-		await _addOneUser(req, res);
-	} catch (error: any) {
-		return res.json({ message: error.message });
-	}
+  throw Error("Senha não informada");
 }
 
 /**
@@ -103,19 +121,7 @@ export async function createUser(req: Request, res: Response) {
  * @param res
  * @returns
  */
-export async function updateOneUser(req: Request, res: Response) {
-
-}
-
-/**
- * Return signin page form
- * @param req
- * @param res
- */
-
-export async function signIn(req: Request, res: Response) {
-	return res.render('./signin/signIn.ejs');
-}
+export async function updateOneUser(req: Request, res: Response) {}
 
 /**
  * Delete one user.
@@ -124,6 +130,4 @@ export async function signIn(req: Request, res: Response) {
  * @param res
  * @returns
  */
-export async function deleteOneUser(req: Request, res: Response) {
-
-}
+export async function deleteOneUser(req: Request, res: Response) {}
