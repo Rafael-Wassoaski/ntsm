@@ -1,5 +1,15 @@
 {
   "password": {
     "sault": "sault"
+  },
+  "coockies":{
+    "sessionKey": "ntsm",
+    "sessionSecret": "secret",
+    "cookieConfig":{
+      "httpOnly": true,
+      "secure": true,
+      "maxAge": 1800,
+      "signed": true
+    }
   }
 }

@@ -18,10 +18,10 @@
       contentType: "application/json; charset=utf-8",
       data: JSON.stringify(userCredentials),
       success: (res) => {
-        console.log(res);
         if (res) {
           const user = res;
           window.localStorage.setItem("user", JSON.stringify(user));
+          window.location.href = "/conversas"
         }
       },
       error: (res) => {

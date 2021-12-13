@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
+import expressSession from 'express-session';
 
 import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
@@ -10,6 +11,7 @@ import 'express-async-errors';
 
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
+import config from "config";
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -20,7 +22,7 @@ const { BAD_REQUEST } = StatusCodes;
  ***********************************************************************************/
 
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser('ntsm'));
 app.use(bodyParser.json());
 
 // Show routes called in console during development
@@ -38,6 +40,7 @@ app.use('/', BaseRouter);
 
 // Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-ignore
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     logger.err(err, true);
     return res.status(BAD_REQUEST).json({
@@ -45,7 +48,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
 });
 
-
+const store = new expressSession.MemoryStore();
+const cookiesName: string = config.get('cookies.sessionKey');
+const cookiesSessionSecret: string = config.get('cookies.sessionSecret');
+app.use(expressSession({
+    store,
+    name: cookiesName,
+    secret: cookiesSessionSecret
+}))
 
 /************************************************************************************
  *                              Serve front-end content

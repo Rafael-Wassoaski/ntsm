@@ -1,8 +1,9 @@
 import StatusCodes from "http-status-codes";
-import { Request, Response } from "express";
+import { CookieOptions, Request, Response } from "express";
 import { IUserSearchData, Users } from "../../../entities/User";
 import * as crypto from "crypto";
 import config from "config";
+import cookieParser from "cookie-parser";
 
 const {
   BAD_REQUEST,
@@ -36,8 +37,11 @@ export async function login(req: Request, res: Response) {
   }
 
   delete user.password;
+  req.session.user = user;
+  console.log(req.session);
+
   res.status(OK);
-  return res.json(user);
+  return res.end();
 }
 
 /**
