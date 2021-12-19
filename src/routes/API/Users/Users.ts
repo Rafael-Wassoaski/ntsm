@@ -1,9 +1,8 @@
 import StatusCodes from "http-status-codes";
-import { CookieOptions, Request, Response } from "express";
+import { Request, Response } from "express";
 import { IUserSearchData, Users } from "../../../entities/User";
 import * as crypto from "crypto";
 import config from "config";
-import cookieParser from "cookie-parser";
 
 const {
   BAD_REQUEST,
@@ -12,6 +11,7 @@ const {
   FORBIDDEN,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  NO_CONTENT
 } = StatusCodes;
 
 /**
@@ -35,13 +35,9 @@ export async function login(req: Request, res: Response) {
     res.status(FORBIDDEN);
     return res.json({ message: "Senha ou usuário incorretos" });
   }
-
-  delete user.password;
-  req.session.user = user;
-  console.log(req.session);
-
-  res.status(OK);
-  return res.end();
+  
+  delete user.senha;
+  return res.json(user);
 }
 
 /**
@@ -60,7 +56,7 @@ export async function getAllUsers(req: Request, res: Response) {
  * @param user
  */
 function _findUserByNameOrEmail(user: IUserSearchData) {
-  return Users.findOne({ $or: [{ nome: user.nome }, { email: user.email }] });
+  return Users.findOne({ $or: [{ nome: user.nome }, { email: user.email }] }).lean();
 }
 
 /**

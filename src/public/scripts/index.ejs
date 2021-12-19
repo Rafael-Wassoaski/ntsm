@@ -1,38 +1,54 @@
 <script>
-  function login() {
-    const login = $("#login").val();
-    const password = $("#password").val();
+	function login() {
+		const login = $("#login").val();
+		const password = $("#password").val();
 
-    if (!login || !password) {
-      alert("Informe seu login e senha para continuar");
-      return;
-    }
+		if (!login || !password) {
+			alert("Informe seu login e senha para continuar");
+			return;
+		}
 
-    const userCredentials = {
-      login,
-      password,
-    };
-    $.ajax({
-      url: "/api/v1/users/login",
-      type: "post",
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify(userCredentials),
-      success: (res) => {
-        if (res) {
-          const user = res;
-          window.localStorage.setItem("user", JSON.stringify(user));
-          window.location.href = "/conversas"
-        }
-      },
-      error: (res) => {
-        if (!res.responseJSON) {
-          alert("Erro desconhecido, tente novamente mais tarde");
-          return;
-        }
+		const userCredentials = {
+			login,
+			password,
+		};
+		$.ajax({
+			url: "/api/v1/users/login",
+			type: "post",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(userCredentials),
+			success: (res) => {
+				if (res) {
+					const user = res;
+					window.localStorage.setItem("user", JSON.stringify(user));
+					const userId = JSON.stringify({ _id: user._id });
+					_reRenderHTML(userId)
+				}
+			},
+			error: errorHandler
+		});
+	}
 
-        const { message } = res.responseJSON;
-        alert(message);
-      },
-    });
-  }
+	async function _reRenderHTML(data) {
+		$.ajax({
+			url: "api/v1/conversas",
+			type: "post",
+			contentType: "application/json; charset=utf-8",
+			data,
+			success: (res) => {
+				$('body').html(res);
+			},
+			error: errorHandler
+		})
+	}
+
+	function errorHandler(error) {
+		if (!error.responseJSON) {
+			alert("Erro desconhecido, tente novamente mais tarde");
+			return;
+		}
+
+		const { message } = error.responseJSON;
+		alert(message);
+	}
 </script>

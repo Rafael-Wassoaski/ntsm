@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import dataBaseConnection from '../../DataBaseConnection';
-import { IContato } from '@entities/Contato';
+import { IContato } from '../interfaces/Contato';
 
 export const contato = new mongoose.Schema({
 	nome: String,
