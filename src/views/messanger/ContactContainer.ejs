@@ -3,20 +3,20 @@
 
 
 <div class="container">
-    <div style="margin-top: 5px">
-        <span class="status">    </span>
+    <div class="centerContentContainer">
+        <span class="centerContent status">    </span>
     </div>
 
-    <div class="contactName">
-        <p>
+    <div class="centerContentContainer">
+        <p class="contactName centerContent">
             <%= contato.nome%>
         </p>
     </div>
-    <div class="newMessagesContainer">
-        <p class="newMessage">0</p>
+    <div class="centerContentContainer newMessageContainer">
+        <p class="centerContent">0</p>
     </div>
-    <div class="newConversation">
-        <p style="font-weight: bold"> > </p>
+    <div class="centerContentContainer newConversation">
+        <a style="font-weight: bold" class="centerContent" onclick="startNewConversation()"> > </a>
     </div>
 
 </div>

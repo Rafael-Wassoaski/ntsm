@@ -23,7 +23,8 @@ export const usuario = new mongoose.Schema({
 		required: true,
 	},
 	contatos: {
-		type: [mongoose.Schema.Types.ObjectId]
+		type: [mongoose.Schema.Types.ObjectId],
+		ref: 'users'
 	},
 });
 
