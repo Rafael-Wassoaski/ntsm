@@ -1,0 +1,43 @@
+.status{
+    width: 20px;
+    height: 20px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 50px;
+    background: red;
+    margin: 50px;
+    padding: 0px 30 20 0;
+}
+
+.container{
+    background-color: #9B9B9B;
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-.5 * var(--bs-gutter-x));
+    margin-left: calc(-.5 * var(--bs-gutter-x));
+
+}
+
+.newMessagesContainer{
+    width:50px;
+    height:50px;
+    display: table;
+    margin: 5px  10px 5px 5px;
+    border-radius: 50px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    background: red;
+
+}
+
+.newMessage{
+    width: 50px;
+    height: 50px;
+    text-align:center;
+    vertical-align: middle;
+    display: table-cell;
+}

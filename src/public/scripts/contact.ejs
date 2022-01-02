@@ -1,0 +1,38 @@
+<script>
+    $(document).ready(function (){
+    })
+  	function addNewContact() {
+		const contactIdentifier = $('#newContactIdentifier').val();
+		const user = JSON.parse(window.localStorage.getItem("user"));
+		const data = {
+			userId: user._id,
+			contactIdentifier
+		}
+
+		$.ajax({
+			url: 'api/v1/users/newContact',
+			contentType: 'application/json; charset=utf-8',
+			type: 'post',
+			data: JSON.stringify(data),
+			success: (res) => {
+				if (res) {
+					alert('Usuário adicionado com sucesso');
+					//TODO: Adicionar aqui o na interaface o novo contato recebido da API
+				}
+			},
+			error: errorHandler
+		})
+	}
+
+	function errorHandler(error) {
+		if (!error.responseJSON) {
+			alert("Erro desconhecido, tente novamente mais tarde");
+			return;
+		}
+
+		const { message } = error.responseJSON;
+		alert(message);
+	}
+
+
+</script>

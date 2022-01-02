@@ -24,6 +24,14 @@ const { BAD_REQUEST } = StatusCodes;
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('ntsm'));
 app.use(bodyParser.json());
+const store = new expressSession.MemoryStore();
+const cookiesName: string = config.get('cookies.sessionKey');
+const cookiesSessionSecret: string = config.get('cookies.sessionSecret');
+app.use(expressSession({
+    store,
+    name: cookiesName,
+    secret: cookiesSessionSecret
+}));
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === 'development') {
@@ -47,15 +55,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
         error: err.message,
     });
 });
-
-const store = new expressSession.MemoryStore();
-const cookiesName: string = config.get('cookies.sessionKey');
-const cookiesSessionSecret: string = config.get('cookies.sessionSecret');
-app.use(expressSession({
-    store,
-    name: cookiesName,
-    secret: cookiesSessionSecret
-}))
 
 /************************************************************************************
  *                              Serve front-end content

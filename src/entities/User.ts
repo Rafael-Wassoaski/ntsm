@@ -23,14 +23,14 @@ export const usuario = new mongoose.Schema({
 		required: true,
 	},
 	contatos: {
-		type: contato,
+		type: [mongoose.Schema.Types.ObjectId]
 	},
 });
 
 export const Users = dataBaseConnection.model('users', usuario);
 
 export interface IUser {
-	id: Number
+	_id: Number
 	nome: String,
 	email: String,
 	senha: String,

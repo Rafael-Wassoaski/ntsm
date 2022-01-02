@@ -3,10 +3,10 @@ import { Mensagens } from '../../../entities/Mensagem';
 
 
 export async function listarConversas(req: Request, res: Response){
-    const {_id} = req.body;
-    const conversas = await _getConversasByUserId(_id);
+    const {user} = req.session;
+    const conversas = await _getConversasByUserId(user._id);
     
-    return res.render('./messanger/Messages.ejs');
+    return res.render('./messanger/Messages.ejs', {conversas, contatos: user.contatos});
 }
 
 function _getConversasByUserId(userId: String){

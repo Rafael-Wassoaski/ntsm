@@ -21,20 +21,17 @@
 				if (res) {
 					const user = res;
 					window.localStorage.setItem("user", JSON.stringify(user));
-					const userId = JSON.stringify({ _id: user._id });
-					_reRenderHTML(userId)
+					_reRenderHTML();
 				}
 			},
 			error: errorHandler
 		});
 	}
 
-	async function _reRenderHTML(data) {
+	async function _reRenderHTML() {
 		$.ajax({
 			url: "api/v1/conversas",
-			type: "post",
-			contentType: "application/json; charset=utf-8",
-			data,
+			type: "GET",
 			success: (res) => {
 				$('body').html(res);
 			},

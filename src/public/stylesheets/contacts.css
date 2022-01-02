@@ -12,3 +12,10 @@
     border-width: 2px;
     flex-direction: column;
 }
+
+.newContactDiv{
+    position: absolute;
+    width: 100%;
+    bottom: 5px;
+    left: 5px;
+}

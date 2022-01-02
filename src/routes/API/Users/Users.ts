@@ -1,17 +1,17 @@
-import StatusCodes from "http-status-codes";
-import { Request, Response } from "express";
-import { IUserSearchData, Users } from "../../../entities/User";
-import * as crypto from "crypto";
-import config from "config";
+import StatusCodes from 'http-status-codes';
+import { Request, Response } from 'express';
+import { IUser, Users } from '../../../entities/User';
+import * as crypto from 'crypto';
+import config from 'config';
 
 const {
-  BAD_REQUEST,
-  CREATED,
-  OK,
-  FORBIDDEN,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-  NO_CONTENT
+	BAD_REQUEST,
+	CREATED,
+	OK,
+	FORBIDDEN,
+	NOT_FOUND,
+	INTERNAL_SERVER_ERROR,
+	NO_CONTENT,
 } = StatusCodes;
 
 /**
@@ -21,23 +21,63 @@ const {
  * @param res
  */
 export async function login(req: Request, res: Response) {
-  const { login, password } = req.body;
-  const user = await _findUserByNameOrEmail({ nome: login, email: login });
+	const { login, password } = req.body;
+	const user = await _findUserByNameOrEmail(login);
+	
+	if (!user) {
+		res.status(NOT_FOUND);
+		return res.json({ message: 'Usuário não cadastrado' });
+	}
+	
+	const digestedRequestPassword = digestPassword(password);
+	
+	if (digestedRequestPassword !== user.senha) {
+		res.status(FORBIDDEN);
+		return res.json({ message: 'Senha ou usuário incorretos' });
+	}
 
-  if (!user) {
-    res.status(NOT_FOUND);
-    return res.json({ message: "Usuário não cadastrado" });
-  }
+	user.contatos = await getContatos(user.contatos);
+	
+	delete user.senha;
 
-  const digestedRequestPassword = digestPassword(password);
+	req.session.user = user;
+	return res.redirect('/api/v1/conversas');
+}
 
-  if (digestedRequestPassword !== user.senha) {
-    res.status(FORBIDDEN);
-    return res.json({ message: "Senha ou usuário incorretos" });
-  }
-  
-  delete user.senha;
-  return res.json(user);
+async function getContatos(userContacts: Array<string>): Promise<Array<IUser>>{
+	return await Users.find({ _id: { $in: userContacts } }).select('nome').lean();
+}
+
+/**
+ * Adicionar um novo contato a lista de contatos do usuário
+ * @param req
+ * @param res
+ */
+
+export async function addContato(req: Request, res: Response) {
+	const { userId, contactIdentifier } = req.body;
+	try{
+		const contato = await _findUserByNameOrEmail(contactIdentifier);
+		if(!contato){
+			res.status(BAD_REQUEST);
+			return res.json({message: 'Contato não encontrado'});
+		}
+		await _addContatoToUser(userId, contato);
+		delete contato.email;
+		delete contato.senha;
+		
+		res.status(OK);
+		return res.json(contato);
+		
+	}catch (e) {
+		console.log(e);
+		res.status(INTERNAL_SERVER_ERROR);
+		return res.json(e);
+	}
+}
+
+async function _addContatoToUser(userId: String, contato: IUser) {
+	return Users.updateOne({_id: userId}, {$push: {contatos: contato._id}})
 }
 
 /**
@@ -48,15 +88,19 @@ export async function login(req: Request, res: Response) {
  * @returns
  */
 export async function getAllUsers(req: Request, res: Response) {
-  return res.render("messanger/Messages.ejs");
+	return res.render('messanger/Messages.ejs');
 }
 
 /**
  * find user based in hist name or email
  * @param user
  */
-function _findUserByNameOrEmail(user: IUserSearchData) {
-  return Users.findOne({ $or: [{ nome: user.nome }, { email: user.email }] }).lean();
+function _findUserByNameOrEmail(userIdentifier: String) {
+	return Users.findOne({ $or: [{ nome: userIdentifier }, { email: userIdentifier }] }).lean();
+}
+
+function _findUserById(userId: String){
+	return Users.findOne({_id: userId}).lean();
 }
 
 /**
@@ -66,12 +110,12 @@ function _findUserByNameOrEmail(user: IUserSearchData) {
  * @param next
  */
 async function _isUserAvailible(req: Request, res: Response) {
-  const { nome, email } = req.body;
-  const user = await _findUserByNameOrEmail({ nome, email });
-  if (user) {
-    res.status(FORBIDDEN);
-    throw Error("Usuário já cadastrado");
-  }
+	const { nome, email } = req.body;
+	const user = await _findUserByNameOrEmail(nome||email );
+	if (user) {
+		res.status(FORBIDDEN);
+		throw Error('Usuário já cadastrado');
+	}
 }
 
 /**
@@ -82,21 +126,21 @@ async function _isUserAvailible(req: Request, res: Response) {
  * @returns
  */
 async function _addOneUser(req: Request, res: Response) {
-  const { nome, email, senha } = req.body;
-  const digestedPassword = digestPassword(senha);
-
-  const { id } = await Users.create({ nome, email, senha: digestedPassword });
-  res.status(CREATED);
-  return res.end();
+	const { nome, email, senha } = req.body;
+	const digestedPassword = digestPassword(senha);
+	
+	const { id } = await Users.create({ nome, email, senha: digestedPassword });
+	res.status(CREATED);
+	return res.end();
 }
 
 export async function createUser(req: Request, res: Response) {
-  try {
-    await _isUserAvailible(req, res);
-    await _addOneUser(req, res);
-  } catch (error: any) {
-    return res.json({ message: error.message });
-  }
+	try {
+		await _isUserAvailible(req, res);
+		await _addOneUser(req, res);
+	} catch (error: any) {
+		return res.json({ message: error.message });
+	}
 }
 
 /**
@@ -104,14 +148,14 @@ export async function createUser(req: Request, res: Response) {
  * @param password
  */
 function digestPassword(password: string): String {
-  if (password) {
-    const salt: string = config.get("password.sault");
-    return crypto
-      .pbkdf2Sync(password, salt, 1000, 64, "sha512")
-      .toString("hex");
-  }
-
-  throw Error("Senha não informada");
+	if (password) {
+		const salt: string = config.get('password.sault');
+		return crypto
+			.pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+			.toString('hex');
+	}
+	
+	throw Error('Senha não informada');
 }
 
 /**
@@ -121,7 +165,8 @@ function digestPassword(password: string): String {
  * @param res
  * @returns
  */
-export async function updateOneUser(req: Request, res: Response) {}
+export async function updateOneUser(req: Request, res: Response) {
+}
 
 /**
  * Delete one user.
@@ -130,4 +175,5 @@ export async function updateOneUser(req: Request, res: Response) {}
  * @param res
  * @returns
  */
-export async function deleteOneUser(req: Request, res: Response) {}
+export async function deleteOneUser(req: Request, res: Response) {
+}

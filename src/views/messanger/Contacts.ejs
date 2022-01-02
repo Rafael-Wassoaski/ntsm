@@ -1,2 +1,14 @@
-<link href="/stylesheets/contacts.css" rel="stylesheet" />
-<div id="contacts" class="contacts"></div>
+<link href="/stylesheets/contacts.css" rel="stylesheet" xmlns=""/>
+<%- include ("../../public/scripts/contact.ejs") %>
+
+<div id="contacts" class="contacts">
+
+    <% for(const contato of contatos){ %>
+        <%- include("./ContactContainer.ejs", {contato})%>
+    <% } %>
+    <div class="newContactDiv">
+        <input type="text" id="newContactIdentifier" placeholder="Novo contato">
+        <button class="btn btn-primary" type="button" onclick="addNewContact()">Adicionar contato</button>
+    </div>
+</div>
+

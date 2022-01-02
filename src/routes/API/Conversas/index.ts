@@ -2,6 +2,6 @@ import {Router} from 'express';
 import {listarConversas} from './Conversas';
 
 const router = Router();
-router.post('/', listarConversas);
+router.get('/', listarConversas);
 
 export default router;
