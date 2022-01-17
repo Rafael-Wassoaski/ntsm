@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import dataBaseConnection from '../../DataBaseConnection';
 import { IUser } from '@entities/User';
 import { IMensagem } from '../interfaces/Mensagem';
+import { ObjectId } from 'mongoose';
 
 const Conversa = new mongoose.Schema({
 	usuarios: {
@@ -15,6 +16,7 @@ const Conversa = new mongoose.Schema({
 });
 
 export interface IConversa {
+	id: ObjectId,
 	users: [IUser],
 	mensagens: [IMensagem]
 }

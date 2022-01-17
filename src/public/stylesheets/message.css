@@ -24,7 +24,6 @@
     width: 70%;
     height: 79%;
     box-sizing: border-box;
-    display: grid;
     position: absolute;
     align-items: flex-start;
     border-color: #000000;
