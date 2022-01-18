@@ -1,5 +1,4 @@
-<link href="/stylesheets/contactContainer.css" rel="stylesheet" />
-<%- include ("../../public/scripts/contactContainer.ejs")%>
+<link href="/stylesheets/contactContainer.css" rel="stylesheet"/>
 
 
 <div class="container">
@@ -9,14 +8,17 @@
 
     <div class="centerContentContainer">
         <p class="contactName centerContent">
-            <%= contato.nome%>
+            <%= contato.nome ;%>
         </p>
     </div>
     <div class="centerContentContainer newMessageContainer">
         <p class="centerContent">0</p>
     </div>
     <div class="centerContentContainer newConversation">
-        <a style="font-weight: bold" class="centerContent" onclick="startNewConversation()"> > </a>
+        <a style="font-weight: bold" class="centerContent"  onclick="startNewConversation()" > > </a>
     </div>
 
 </div>
+
+<%- include ("../../public/scripts/contactContainer.ejs") %>
+

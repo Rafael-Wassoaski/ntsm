@@ -1,6 +1,7 @@
 <script>
-    function startNewConversation(){
-			console.log('a')
-			console.log(<%= contato %>);
-    }
+	function startNewConversation() {
+		// iniciarConversa
+		let contato = <%- JSON.stringify(contato); %>;
+
+	}
 </script>

@@ -1,33 +1,37 @@
 import { Request, Response } from 'express';
 import { Mensagens } from '../../../entities/Mensagem';
-import * as crypto from 'crypto';
 import { Conversas, IConversa } from '../../../entities/Conversa';
 
 export async function listarConversas(req: Request, res: Response) {
 	const { user } = req.session;
-	const conversas = await _getConversasByUserId(user._id);
 	
-	return res.render('./messanger/Messages.ejs', { conversas, contatos: user.contatos });
+	return res.render('./messanger/Messages.ejs', {contatos: user.contatos });
 }
 
 function _getConversasByUserId(userId: String) {
-	return Mensagens.find({ remetente: userId }).lean();
+	return Conversas.find({ usuarios: {$in: [userId]}}).lean();
 }
 
 export async function iniciarConversa(req: Request, res: Response) {
 	const { user } = req.session;
 	const { userId } = req.params;
 	
-	const conversation = await getConversation(user, userId);
-	console.log(conversation);
+	let conversation = await getConversation(user, userId);
 	
+	if (!conversation) {
+		const users = [user.id, userId];
+		
+		conversation = await Conversas.create({ usuarios: users, mensagens: [] });
+	}
+	
+	return res.render('./messanger/Messages.ejs', { conversation ,contatos: user.contatos });
 }
 
 async function getConversation(user1: string, user2: string): Promise<IConversa> {
 	return Conversas.findOne({ users: { $in: [user1, user2] } }).lean();
 }
 
-async function newMessage(req: Request, res: Response): Promise<Response> {
+export async function newMessage(req: Request, res: Response): Promise<Response> {
 	const { user: remetente } = req.session;
 	const { userId: destinatario } = req.params;
 	const { mensagem } = req.body;
@@ -36,13 +40,12 @@ async function newMessage(req: Request, res: Response): Promise<Response> {
 	
 	if (conversation) {
 		const newMessage = await Mensagens.create({ remetente, destinatario, mensagem });
-  
+		
 		await Conversas.updateOne({ _id: conversation.id }, { push: { mensagens: newMessage } });
-    
-    return res.json(newMessage);
+		
+		return res.json(newMessage);
 	}
 	
-  res.status(404);
-  return res.send();
-  
+	res.status(404);
+	return res.send();
 }

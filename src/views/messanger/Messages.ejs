@@ -1,11 +1,14 @@
 <div>
-    <link href="/stylesheets/message.css" rel="stylesheet" />
+    <link href="/stylesheets/message.css" rel="stylesheet"/>
     <div class="home-container">
         <div class="home-container1">
             <div id="messages" class="home-container2">
-                <%- include("./Receiver")%>
-                <%- include("./Sender")%>
+                <%- include("./Receiver") %>
+                <%- include("./Sender") %>
+                <%- for (let index = 0; index < JSON.stringify(conversation).mensagens.length; index++){ %>
+                <%- include("./Receiver", {conversation: <%= JSON.stringify(conversation).mensagens[i] %>)%>
 
+                <%- } %>
             </div>
             <div class="home-container3">
         <textarea
@@ -16,12 +19,12 @@
                 <button class="btn sendButton">
           <span>
             <span>Enviar</span>
-            <br />
+            <br/>
             <span></span>
           </span>
                 </button>
             </div>
-            <%- include("./Contacts.ejs", {contatos})%>
+            <%- include("./Contacts.ejs", {contatos}) %>
         </div>
     </div>
 </div>

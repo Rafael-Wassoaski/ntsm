@@ -1,9 +1,9 @@
 import {Router} from 'express';
-import {listarConversas} from './Conversas';
+import { iniciarConversa, listarConversas, newMessage } from './Conversas';
 
 const router = Router();
 router.get('/', listarConversas);
-router.post('/iniciarConversa/:userId', )
-router.post('/newMessage/:userId', )
+router.post('/iniciarConversa/:userId', iniciarConversa);
+router.post('/newMessage/:userId', newMessage);
 
 export default router;
