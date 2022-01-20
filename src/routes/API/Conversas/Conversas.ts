@@ -1,30 +1,25 @@
 import { Request, Response } from 'express';
 import { Mensagens } from '../../../entities/Mensagem';
 import { Conversas, IConversa } from '../../../entities/Conversa';
+const ObjectId= require('mongoose').Types.ObjectId;
 
 export async function listarConversas(req: Request, res: Response) {
 	const { user } = req.session;
+	const { userId } = req.params;
+	let conversation = await getConversation(user, userId);
 	
-	return res.render('./messanger/Messages.ejs', {contatos: user.contatos });
+	if (ObjectId.isValidObjectId(userId)) {
+		if (!conversation) {
+			const users = [user.id, userId];
+			conversation = await Conversas.create({ usuarios: users, mensagens: [] });
+		}
+	}
+	
+	return res.render('./messanger/Messages.ejs', { conversation, contatos: user.contatos });
 }
 
 function _getConversasByUserId(userId: String) {
-	return Conversas.find({ usuarios: {$in: [userId]}}).lean();
-}
-
-export async function iniciarConversa(req: Request, res: Response) {
-	const { user } = req.session;
-	const { userId } = req.params;
-	
-	let conversation = await getConversation(user, userId);
-	
-	if (!conversation) {
-		const users = [user.id, userId];
-		
-		conversation = await Conversas.create({ usuarios: users, mensagens: [] });
-	}
-	
-	return res.render('./messanger/Messages.ejs', { conversation ,contatos: user.contatos });
+	return Conversas.find({ usuarios: { $in: [userId] } }).lean();
 }
 
 async function getConversation(user1: string, user2: string): Promise<IConversa> {

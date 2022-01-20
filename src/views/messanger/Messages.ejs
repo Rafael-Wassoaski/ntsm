@@ -1,14 +1,10 @@
 <div>
     <link href="/stylesheets/message.css" rel="stylesheet"/>
+    <%- include ("../../public/scripts/messages.ejs") %>
+
     <div class="home-container">
         <div class="home-container1">
             <div id="messages" class="home-container2">
-                <%- include("./Receiver") %>
-                <%- include("./Sender") %>
-                <%- for (let index = 0; index < JSON.stringify(conversation).mensagens.length; index++){ %>
-                <%- include("./Receiver", {conversation: <%= JSON.stringify(conversation).mensagens[i] %>)%>
-
-                <%- } %>
             </div>
             <div class="home-container3">
         <textarea

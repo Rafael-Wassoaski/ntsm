@@ -41,7 +41,8 @@ export async function login(req: Request, res: Response) {
 	delete user.senha;
 
 	req.session.user = user;
-	return res.redirect('/api/v1/conversas');
+	res.status(OK);
+	return res.send();
 }
 
 async function getContatos(userContacts: Array<string>): Promise<Array<IUser>>{

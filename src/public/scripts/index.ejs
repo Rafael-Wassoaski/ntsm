@@ -18,19 +18,20 @@
 			contentType: "application/json; charset=utf-8",
 			data: JSON.stringify(userCredentials),
 			success: (res) => {
-				if (res) {
-					const user = res;
-					window.localStorage.setItem("user", JSON.stringify(user));
-					_reRenderHTML();
-				}
+				const user = res;
+
+				window.localStorage.setItem("user", JSON.stringify(user));
+
+				_reRenderHTML();
 			},
 			error: errorHandler
 		});
 	}
 
 	async function _reRenderHTML() {
+		console.log('aaa')
 		$.ajax({
-			url: "api/v1/conversas",
+			url: "api/v1/conversas/0",
 			type: "GET",
 			success: (res) => {
 				$('body').html(res);

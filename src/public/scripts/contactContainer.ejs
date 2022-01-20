@@ -1,7 +1,25 @@
 <script>
-	function startNewConversation() {
+	async function startNewConversation() {
 		// iniciarConversa
-		let contato = <%- JSON.stringify(contato); %>;
+		const contato = <%- JSON.stringify(contato); %>;
 
+		$.ajax({
+			url: `api/v1/conversas/${ contato._id }`,
+			type: "GET",
+			success: (res) => {
+				$('body').html(res);
+			},
+			error: errorHandler
+		});
+	}
+
+	function errorHandler(error) {
+		if (!error.responseJSON) {
+			alert("Erro desconhecido, tente novamente mais tarde");
+			return;
+		}
+
+		const { message } = error.responseJSON;
+		alert(message);
 	}
 </script>
