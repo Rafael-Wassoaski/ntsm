@@ -1,7 +1,42 @@
 <script>
-    $(document).ready(function (){
+	this.conversations = null;
+	$(document).ready(() => {
+		this.conversations = <%- JSON.stringify(conversation); %>;
+		const divMessages = $('#messages');
+		for (const message of conversations.mensagens) {
 
-			const conversations = <%- JSON.stringify(conversation); %>;
-			console.log(conversations);
-    })
+		}
+	});
+
+	function sendMessage() {
+		const message = { mensagem: $('#messagetext').val() };
+		console.log(message);
+		console.log(this.conversations);
+		if (!message) {
+			return;
+		}
+
+		const contatoId = this.conversations._id;
+
+		$.ajax({
+			url: `api/v1/conversas/newMessage/${ contatoId }`,
+			type: 'POST',
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(message),
+			success: (res) => {
+				console.log(res)
+			},
+			error: errorHandler
+		});
+	}
+
+	function errorHandler(error) {
+		if (!error.responseJSON) {
+			alert("Erro desconhecido, tente novamente mais tarde");
+			return;
+		}
+
+		const { message } = error.responseJSON;
+		alert(message);
+	}
 </script>
